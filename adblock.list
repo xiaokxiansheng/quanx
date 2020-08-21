@@ -13969,11 +13969,5 @@ IP-CIDR,149.154.172.0/22,Proxy
 IP-CIDR,74.125.23.127/32,Proxy
 # hacker news web site
 DOMAIN-SUFFIX,news.ycombinator.com,Proxy
-
-
 FINAL,direct
-
-[URL Rewrite]
-^http://(www.)?google.cn https://www.google.com 302
-
 # By Moshel @ https://hzy.pw/
