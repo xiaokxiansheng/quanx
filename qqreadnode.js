@@ -219,7 +219,7 @@ async function all() {
  
 
      if (BOX == 1){
-	
+	await qqreadinfo();//用户名
 	if (nowTimes.getHours() === 0 && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 59)) 
 	{
     await qqreadtrack();//更新
