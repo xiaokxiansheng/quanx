@@ -14,6 +14,8 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 12.28 固定ck版,增加外部通知，默认12点以及23.40通知，解决宝箱翻倍问题，解决手机端运行异常问题
 12.28 解决通知问题，notifyInterval     0为关闭通知，1为所有通知，2为12 23 点通知  ， 3为 6 12 18 23 点通知 
 12.28 增加 无通知时打印通知
+12.29 修复手机通知问题，增加外部推送开关
+1.1 修复签到问题
 
 
 ⚠️cookie获取方法：
@@ -59,34 +61,78 @@ let task ,tz, kz,config = '';
 
 console.log(`\n========= 脚本执行时间(TM)：${new Date(new Date().getTime() + 0 * 60 * 60 * 1000).toLocaleString('zh', {hour12: false})} =========\n`)
 const notify = $.isNode() ? require("./sendNotify") : "";
+const notifyttt = 0// 0为关闭外部推送，1为12 23 点外部推送
 const notifyInterval = 2;// 0为关闭通知，1为所有通知，2为12 23 点通知  ， 3为 6 12 18 23 点通知 
 const logs = 0;   //0为关闭日志，1为开启
 const maxtime = 10//每日上传时长限制，默认20小时
 const wktimess = 1200//周奖励领取标准，默认1200分钟
-const CASH = 10;//提现金额 可设置0 1 2 10 30 50 100  设置0关闭
+const CASH = 0;//提现金额 可设置0 1 2 10 30 50 100  设置0关闭
+
 
 //在``里面填写，多账号换行
 let qqreadbodyVal=
-`{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.40.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"2797487185\",\"guid\":2797487185,\"session\":\"ny1oczn1pzvqo3kgbgxmknx84iqlr4ug\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"26617976\",\"cid\":\"1\"},\"dis\":1609378750613,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"26617976\",\"bookStatus\":0,\"bookPay\":0,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_26617976\"}]}
-{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.40.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"3170927664\",\"guid\":3170927664,\"session\":\"l71f1fp4fg8h8bjallbkcnrdsz50d8gp\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"34207118\",\"cid\":\"1\"},\"dis\":1609378859713,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"34207118\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_0_34207118\"}]}
-{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.40.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"931514E82A49ED417FE7C399D25BDBE0\",\"guid\":1784571719,\"session\":\"gnwkpgqcxdvykfo8j0wfmj6g2rrep4xo\",\"scene\":3001,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"28027842\",\"cid\":\"1\"},\"dis\":1609378968483,\"ext6\":36,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"28027842\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_0_28027842\"}]}
-{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.40.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"C62F387664BFA916BAC81D6D7A4AAF9A\",\"guid\":3348846862,\"session\":\"ega5x99f4e680josa63euk5enhtcokno\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"19480992\",\"cid\":\"1\"},\"dis\":1609379037033,\"ext6\":64,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"19480992\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_19480992\"}]}
-{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.40.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"0A45560527ACE275F0CB913FC0763334\",\"guid\":3087463316,\"session\":\"lqk41gjgyk89tuycn1j7w9urhjpi7m4u\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"31923768\",\"cid\":\"1\"},\"dis\":1609379198878,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"31923768\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_31923768\"}]}
-{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.40.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"ED60B75D67E3B287FC632F4892E9219F\",\"guid\":2571640167,\"session\":\"hr930kd3cklo8xyha45mzjtwiyhdhx9g\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"23315827\",\"cid\":\"1\"},\"dis\":1609381109720,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"23315827\",\"bookStatus\":1,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_0_23315827\"}]}`
+`{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.38.2\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"2797487185\",\"guid\":2797487185,\"session\":\"ny1oczn1pzvqo3kgbgxmknx84iqlr4ug\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"26617976\",\"cid\":\"1\"},\"dis\":1609378750613,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"26617976\",\"bookStatus\":0,\"bookPay\":0,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_26617976\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.38.2\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"3170927664\",\"guid\":3170927664,\"session\":\"l71f1fp4fg8h8bjallbkcnrdsz50d8gp\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"34207118\",\"cid\":\"1\"},\"dis\":1609378859713,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"34207118\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_0_34207118\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.38.2\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"931514E82A49ED417FE7C399D25BDBE0\",\"guid\":1784571719,\"session\":\"gnwkpgqcxdvykfo8j0wfmj6g2rrep4xo\",\"scene\":3001,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"28027842\",\"cid\":\"1\"},\"dis\":1609378968483,\"ext6\":36,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"28027842\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_0_28027842\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.38.2\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"C62F387664BFA916BAC81D6D7A4AAF9A\",\"guid\":3348846862,\"session\":\"ega5x99f4e680josa63euk5enhtcokno\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"19480992\",\"cid\":\"1\"},\"dis\":1609379037033,\"ext6\":64,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"19480992\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_19480992\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.38.2\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"0A45560527ACE275F0CB913FC0763334\",\"guid\":3087463316,\"session\":\"lqk41gjgyk89tuycn1j7w9urhjpi7m4u\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"31923768\",\"cid\":\"1\"},\"dis\":1609379198878,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"31923768\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_31923768\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.38.2\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"ED60B75D67E3B287FC632F4892E9219F\",\"guid\":2571640167,\"session\":\"hr930kd3cklo8xyha45mzjtwiyhdhx9g\",\"scene\":1132,\"source\":-1,\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"23315827\",\"cid\":\"1\"},\"dis\":1609381109720,\"ext6\":40,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"23315827\",\"bookStatus\":1,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_0_23315827\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.41.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"1147496904\",\"guid\":1147496904,\"session\":\"mjapmqqn292ao5lqca1y6g4lu867txyt\",\"scene\":2016,\"source\":\"wza0005wzb0004\",\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"26855477\",\"cid\":\"1\"},\"dis\":1609479489951,\"ext6\":31,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"26855477\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_26855477\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.41.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"2336005187\",\"guid\":2336005187,\"session\":\"k23mixjek4jlf2n4z94dqsrybtztmjok\",\"scene\":2016,\"source\":\"wza0005wzb0004\",\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"NewyearCard_pageClose_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"23475205\",\"cid\":\"1\"},\"dis\":1609479574701,\"ext6\":47,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"23475205\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_1_23475205\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.41.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"3127756255\",\"guid\":3127756255,\"session\":\"nsidi72opql6c83g5pz5pmnofzhn75ea\",\"scene\":2016,\"source\":\"wza0005wzb0004\",\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"NewyearCard_pageClose_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"31685038\",\"cid\":\"1\"},\"dis\":1609479653345,\"ext6\":43,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"31685038\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_2_31685038\"}]}
+{\"common\":{\"appid\":1450024394,\"areaid\":5,\"qq_ver\":\"8.5.0\",\"os_ver\":\"iOS 14.3\",\"mp_ver\":\"0.41.0\",\"mpos_ver\":\"1.23.0\",\"brand\":\"iPhone\",\"model\":\"iPhone XS<iPhone11,2>\",\"screenWidth\":375,\"screenHeight\":812,\"windowWidth\":375,\"windowHeight\":729,\"openid\":\"4FD39A6458CAB0697CE439600DA809DB\",\"guid\":2898775612,\"session\":\"nvlk20im55st5dqppuoxisrzp3hhrt2m\",\"scene\":2016,\"source\":\"wza0005wzb0004\",\"hasRedDot\":\"false\",\"missions\":-1,\"caseID\":-1},\"dataList\":[{\"click1\":\"bookDetail_bottomBar_read_C\",\"click2\":\"bookLib2_bookList_bookClick_C\",\"route\":\"pages/book-read/index\",\"refer\":\"pages/book-detail/index\",\"options\":{\"bid\":\"26150754\",\"cid\":\"1\"},\"dis\":1609479709412,\"ext6\":50,\"eventID\":\"bookRead_show_I\",\"type\":\"shown\",\"ccid\":1,\"bid\":\"26150754\",\"bookStatus\":0,\"bookPay\":1,\"chapterStatus\":0,\"ext1\":{\"font\":18,\"bg\":0,\"pageMode\":1},\"from\":\"bookLib2_bookList_bookClick_C_3_26150754\"}]}`
 let qqreadtimeurlVal=
 `https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=1132&refer=pages%2Fbook-category%2Findex&bid=26617976&readTime=5185&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A5185%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
 https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=1132&refer=pages%2Fbook-category%2Findex&bid=34207118&readTime=4532&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A4532%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
 https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=3001&refer=pages%2Fbook-category%2Findex&bid=28027842&readTime=4290&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A4290%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
 https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=1132&refer=pages%2Fbook-category%2Findex&bid=19480992&readTime=4051&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A4051%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
 https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=1132&refer=pages%2Fbook-category%2Findex&bid=31923768&readTime=3884&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A3884%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
-https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=1132&refer=pages%2Fbook-category%2Findex&bid=23315827&readTime=3342&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A3342%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1`
+https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=1132&refer=pages%2Fbook-category%2Findex&bid=23315827&readTime=3342&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A3342%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
+https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=2016&refer=-1&bid=26855477&readTime=4553&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A4553%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
+https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=2016&refer=pages%2Fbook-category%2Findex&bid=23475205&readTime=6197&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A6197%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
+https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=2016&refer=pages%2Fbook-category%2Findex&bid=31685038&readTime=6402&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A6402%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1
+https://mqqapi.reader.qq.com/mqq/addReadTimeWithBid?scene=2016&refer=pages%2Fbook-category%2Findex&bid=26150754&readTime=5906&read_type=0&conttype=1&read_status=0&chapter_info=%5B%7B%221%22%3A%7B%22readTime%22%3A5906%2C%22pay_status%22%3A0%7D%7D%5D&sp=-1`
 let qqreadtimeheaderVal=
-`{\"ywsession\":\"ny1oczn1pzvqo3kgbgxmknx84iqlr4ug\",\"Cookie\":\"ywguid=2797487185;ywkey=ywRj9L0Tsj6B;platform=ios;channel=mqqmina;mpVersion=0.40.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=2797487185\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.40.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.40.0\"}
-{\"ywsession\":\"l71f1fp4fg8h8bjallbkcnrdsz50d8gp\",\"Cookie\":\"ywguid=3170927664;ywkey=yw56PDvEf0s9;platform=ios;channel=mqqmina;mpVersion=0.40.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=3170927664\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.40.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.40.0\"}
-{\"ywsession\":\"gnwkpgqcxdvykfo8j0wfmj6g2rrep4xo\",\"Cookie\":\"ywguid=1784571719;ywkey=ywmR3qTVKqyn;platform=ios;channel=mqqmina;mpVersion=0.40.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=931514E82A49ED417FE7C399D25BDBE0\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.40.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.40.0\"}
-{\"ywsession\":\"ega5x99f4e680josa63euk5enhtcokno\",\"Cookie\":\"ywguid=3348846862;ywkey=ywOHq1seZnTw;platform=ios;channel=mqqmina;mpVersion=0.40.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=C62F387664BFA916BAC81D6D7A4AAF9A\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.40.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.40.0\"}
-{\"ywsession\":\"lqk41gjgyk89tuycn1j7w9urhjpi7m4u\",\"Cookie\":\"ywguid=3087463316;ywkey=ywV2BvjTZf44;platform=ios;channel=mqqmina;mpVersion=0.40.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=0A45560527ACE275F0CB913FC0763334\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.40.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.40.0\"}
-{\"ywsession\":\"hr930kd3cklo8xyha45mzjtwiyhdhx9g\",\"Cookie\":\"ywguid=2571640167;ywkey=ywdNTsLzPMjS;platform=ios;channel=mqqmina;mpVersion=0.40.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=ED60B75D67E3B287FC632F4892E9219F\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.40.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.40.0\"}`
+`{\"ywsession\":\"ny1oczn1pzvqo3kgbgxmknx84iqlr4ug\",\"Cookie\":\"ywguid=2797487185;ywkey=ywRj9L0Tsj6B;platform=ios;channel=mqqmina;mpVersion=0.38.2;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=2797487185\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.38.2/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.38.2\"}
+{\"ywsession\":\"l71f1fp4fg8h8bjallbkcnrdsz50d8gp\",\"Cookie\":\"ywguid=3170927664;ywkey=yw56PDvEf0s9;platform=ios;channel=mqqmina;mpVersion=0.38.2;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=3170927664\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.38.2/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.38.2\"}
+{\"ywsession\":\"gnwkpgqcxdvykfo8j0wfmj6g2rrep4xo\",\"Cookie\":\"ywguid=1784571719;ywkey=ywmR3qTVKqyn;platform=ios;channel=mqqmina;mpVersion=0.38.2;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=931514E82A49ED417FE7C399D25BDBE0\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.38.2/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.38.2\"}
+{\"ywsession\":\"ega5x99f4e680josa63euk5enhtcokno\",\"Cookie\":\"ywguid=3348846862;ywkey=ywOHq1seZnTw;platform=ios;channel=mqqmina;mpVersion=0.38.2;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=C62F387664BFA916BAC81D6D7A4AAF9A\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.38.2/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.38.2\"}
+{\"ywsession\":\"lqk41gjgyk89tuycn1j7w9urhjpi7m4u\",\"Cookie\":\"ywguid=3087463316;ywkey=ywV2BvjTZf44;platform=ios;channel=mqqmina;mpVersion=0.38.2;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=0A45560527ACE275F0CB913FC0763334\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.38.2/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.38.2\"}
+{\"ywsession\":\"hr930kd3cklo8xyha45mzjtwiyhdhx9g\",\"Cookie\":\"ywguid=2571640167;ywkey=ywdNTsLzPMjS;platform=ios;channel=mqqmina;mpVersion=0.38.2;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=ED60B75D67E3B287FC632F4892E9219F\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.38.2/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.38.2\"}
+{\"ywsession\":\"mjapmqqn292ao5lqca1y6g4lu867txyt\",\"Cookie\":\"ywguid=1147496904;ywkey=ywZOkKlrDJBE;platform=ios;channel=mqqmina;mpVersion=0.41.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=1147496904\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.41.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.41.0\"}
+{\"ywsession\":\"k23mixjek4jlf2n4z94dqsrybtztmjok\",\"Cookie\":\"ywguid=2336005187;ywkey=ywaqiLlJUqSR;platform=ios;channel=mqqmina;mpVersion=0.41.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=2336005187\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.41.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.41.0\"}
+{\"ywsession\":\"nsidi72opql6c83g5pz5pmnofzhn75ea\",\"Cookie\":\"ywguid=3127756255;ywkey=ywVo89H73MiX;platform=ios;channel=mqqmina;mpVersion=0.41.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=3127756255\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.41.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.41.0\"}
+{\"ywsession\":\"nvlk20im55st5dqppuoxisrzp3hhrt2m\",\"Cookie\":\"ywguid=2898775612;ywkey=ywHkUoK0C5po;platform=ios;channel=mqqmina;mpVersion=0.41.0;qq_ver=8.5.0;os_ver=iOS 14.3;mpos_ver=1.23.0;platform=ios;openid=4FD39A6458CAB0697CE439600DA809DB\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Accept\":\"*/*\",\"Host\":\"mqqapi.reader.qq.com\",\"User-Agent\":\"QQ/8.5.0.635 CFNetwork/1209 Darwin/20.2.0\",\"Referer\":\"https://appservice.qq.com/1110657249/0.41.0/page-frame.html\",\"Accept-Language\":\"zh-cn\",\"Accept-Encoding\":\"gzip, deflate, br\",\"mpversion\":\"0.41.0\"}`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -99,9 +145,12 @@ let QQ_READ_COOKIES = {
 "qqreadtimeheaderVal":qqreadtimeheaderVal.split('\n') 
 }
 
+
+
 !(async () => {
 
   await all();
+  
   
 })()
     .catch((e) => {
@@ -138,18 +187,18 @@ async function all() {
 	await qqreadpick();//领周时长奖励
 	}	
     await qqreadtask();//任务列表
-    if (task.data.taskList[0].doneFlag == 0) {
+    if (task.data && ljyd.doneFlag == 0) {
     await qqreaddayread();//阅读任务
      }	 	 
-    if (task.data.taskList[1].doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 1 ) {     
+    if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 1 ) {     
       await qqreadssr1();//阅读金币1	  
     }
-	if (task.data.taskList[2].doneFlag == 0) {
+	if (task.data && dk.doneFlag == 0) {
       await qqreadsign();//金币签到
       await qqreadtake();//阅豆签到
     }	
     await $.wait(4000)	
-	if (task.data.taskList[1].doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 ) {
+	if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 ) {
       await qqreadssr2();//阅读金币2
 	  await $.wait(4000);
 	  await qqreadssr3();//阅读金币3
@@ -161,35 +210,35 @@ async function all() {
       }		
       await qqreadtrans();//今日收益累计
     }	
-    if (task.data.taskList[2].doneFlag == 0) {
+    if (task.data && dk.doneFlag == 0) {
       await qqreadsign2();}//签到翻倍    	
-    if (task.data.taskList[3].doneFlag == 0) {
+    if (task.data && sp.doneFlag == 0) {
       await qqreadvideo();//视频奖励
     }
      }
-
+ 
 
      if (BOX == 1){
-	await qqreadinfo();//用户名
+	
 	if (nowTimes.getHours() === 0 && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 59)) 
 	{
     await qqreadtrack();//更新
   }
     await qqreadtask();//任务列表
-    if (task.data&&task.data.taskList[0].doneFlag == 0) {
+    if (task.data && ljyd.doneFlag == 0) {
     await qqreaddayread();//阅读任务
      }
-	 if (task.data&&task.data.treasureBox.timeInterval<=5000) {
+	 if (task.data&&task.data.treasureBox.timeInterval<=10000) {
       await $.wait(task.data.treasureBox.timeInterval)
       await qqreadbox();//宝箱
     }
-    if (task.data&&task.data.treasureBox.timeInterval-600000<=5000) {
+    if (task.data&&task.data.treasureBox.timeInterval-600000<=10000) {
       await $.wait(task.data.treasureBox.timeInterval-600000)
       await qqreadbox2();//宝箱翻倍
 	  }	
 	}
-	 
       await showmsg();//通知	
+      
   }
 }
 
@@ -204,14 +253,14 @@ console.log(O+'\n'+tz);
 if (notifyInterval==1){
  $.msg(O, "", tz);
 }
-if (notifyInterval==2&&nowTimes.getHours() === 12 ||nowTimes.getHours() === 23&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
+if (notifyInterval==2&&(nowTimes.getHours() === 12 ||nowTimes.getHours() === 23)&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
  $.msg(O, "", tz);
 }
-if (notifyInterval==3&&nowTimes.getHours() ===6||nowTimes.getHours() === 12||nowTimes.getHours() === 18||nowTimes.getHours() === 23&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
+if (notifyInterval==3&&(nowTimes.getHours() ===6||nowTimes.getHours() === 12||nowTimes.getHours() === 18||nowTimes.getHours() === 23)&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
  $.msg(O, "", tz);
 }
 
- if ($.isNode()&&nowTimes.getHours() === 12 ||nowTimes.getHours() === 23 && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10))
+ if (notifyttt == 1&&$.isNode()&&(nowTimes.getHours() === 12 ||nowTimes.getHours() === 23 )&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10))
   await notify.sendNotify(O, tz);
     
  }
@@ -223,16 +272,17 @@ console.log(O+'\n'+kz);
 if (notifyInterval==1){
  $.msg(O, "", kz);
 }
-if (notifyInterval==2&&nowTimes.getHours() === 12 ||nowTimes.getHours() === 23&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
+if (notifyInterval==2&&(nowTimes.getHours() === 12 ||nowTimes.getHours() === 23)&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
  $.msg(O, "", kz);
 }
-if (notifyInterval==3&&nowTimes.getHours() ===6||nowTimes.getHours() === 12||nowTimes.getHours() === 18||nowTimes.getHours() === 23&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
+if (notifyInterval==3&&(nowTimes.getHours() ===6||nowTimes.getHours() === 12||nowTimes.getHours() === 18||nowTimes.getHours() === 23)&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)){
  $.msg(O, "", kz);
 }
- if ($.isNode()&&nowTimes.getHours() === 12 ||nowTimes.getHours() === 23 && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10))
+
+ if (notifyttt == 1&&$.isNode()&&(nowTimes.getHours() === 12 ||nowTimes.getHours() === 23 )&& (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10))
   await notify.sendNotify(O, kz);
-  
-  }
+    
+ }
     resolve()
   })
 }
@@ -285,26 +335,33 @@ function qqreadtask() {
     $.get(toqqreadtaskurl, (error, response, data) => {
       if (logs) $.log(`${O}, 任务列表: ${data}`);
       task = JSON.parse(data);
-      
-      tz +=
-          `【现金余额】:${(task.data.user.amount / 10000).toFixed(2)}元\n` +
-          `【第${task.data.invite.issue}期】:时间${task.data.invite.dayRange}\n` +
-          ` 已邀请${task.data.invite.inviteCount}人，再邀请${task.data.invite.nextInviteConfig.count}人获得${task.data.invite.nextInviteConfig.amount}金币\n` +
-          `【${task.data.taskList[0].title}】:${task.data.taskList[0].amount}金币,${task.data.taskList[0].actionText}\n` +
-          `【${task.data.taskList[1].title}】:${task.data.taskList[1].amount}金币,${task.data.taskList[1].actionText}\n` +
-          `【${task.data.taskList[2].title}】:${task.data.taskList[2].amount}金币,${task.data.taskList[2].actionText}\n` +
-          `【${task.data.taskList[3].title}】:${task.data.taskList[3].amount}金币,${task.data.taskList[3].actionText}\n` +
-          `【宝箱任务${task.data.treasureBox.count + 1}】:${
-              task.data.treasureBox.tipText
-          }\n` +
-          `【${task.data.fans.title}】:${task.data.fans.fansCount}个好友,${task.data.fans.todayAmount}金币\n`;
-		  
-		  kz +=
+   dk = task.data.taskList.find(item => item.type === 200);
+ ljyd = task.data.taskList.find(item => item.type === 210);
+ ydrw = task.data.taskList.find(item => item.type === 220);
+   sp = task.data.taskList.find(item => item.type === 230);
+
+if (task.data.invite.nextInviteConfig){
+tz +=
+        `【现金余额】:${(task.data.user.amount / 10000).toFixed(2)}元\n` +
+        `【第${task.data.invite.issue}期】:时间${task.data.invite.dayRange}\n` +
+        ` 已邀请${task.data.invite.inviteCount}人，再邀请${task.data.invite.nextInviteConfig.count}人获得${task.data.invite.nextInviteConfig.amount}金币\n` +
+        `【${dk.title}】:${dk.amount}金币,${dk.actionText}\n` +
+        `【${ljyd.title}】:${ljyd.amount}金币,${ljyd.actionText}\n` +
+        `【${ydrw.title}】:${ydrw.amount}金币,${ydrw.actionText}\n` +
+        `【${sp.title}】:${sp.amount}金币,${sp.actionText}\n` +
+        `【宝箱任务${task.data.treasureBox.count + 1}】:${
+          task.data.treasureBox.tipText
+        }\n` +
+        `【${task.data.fans.title}】:${task.data.fans.fansCount}个好友,${task.data.fans.todayAmount}金币\n`;
+}
+
+      kz +=
           `【现金余额】:${(task.data.user.amount / 10000).toFixed(2)}元\n` +
           `【宝箱任务${task.data.treasureBox.count + 1}】:${
             task.data.treasureBox.timeInterval/1000
         }秒后领取\n` +
           `【已开宝箱】:${task.data.treasureBox.count}个\n`;
+
       resolve();
     });
   });
@@ -332,16 +389,16 @@ function qqreaddayread() {
 function qqreadsign() {
   return new Promise((resolve, reject) => {
     const toqqreadsignurl = {
-      url: "https://mqqapi.reader.qq.com/mqq/red_packet/user/clock_in/page",
+      url: "https://mqqapi.reader.qq.com/mqq/red_packet/user/clock_in",
       headers: JSON.parse(qqreadtimeheaderVal),
       timeout: 60000,
     };
     $.get(toqqreadsignurl, (error, response, data) => {
       if (logs) $.log(`${O}, 金币签到: ${data}`);
       sign = JSON.parse(data);
-      if (sign.data.videoDoneFlag) {
-        tz += `【金币签到】:获得${sign.data.todayAmount}金币\n`;
-		kz += `【金币签到】:获得${sign.data.todayAmount}金币\n`;
+      if (sign.code == 0) {
+        tz += `【金币签到】:获得${sign.data.amount}金币\n`;
+		kz += `【金币签到】:获得${sign.data.amount}金币\n`;
       }
       resolve();
     });
@@ -439,9 +496,10 @@ function qqreadssr3() {
       $.get(toqqreadssr3url, (error, response, data) => {
         if (logs) $.log(`${O}, 金币奖励3: ${data}`);
         let ssr3 = JSON.parse(data);
-        if (ssr3.data.amount > 0)
+        if (ssr3.data.amount > 0){
           tz += `【阅读金币3】获得${ssr3.data.amount}金币\n`;
 		  kz += `【阅读金币3】获得${ssr3.data.amount}金币\n`;
+}
       });
     
     resolve();
@@ -477,15 +535,15 @@ function qqreadconfig() {
     $.get(toqqreadconfigurl, (error, response, data) => {
       if (logs) $.log(`${O}, 阅读时长查询: ${data}`);
       config = JSON.parse(data);
-      if (config.code == 0)
+      if (config.code == 0){
         tz += `【时长查询】:今日阅读${(
             config.data.pageParams.todayReadSeconds / 60
         ).toFixed(0)}分钟\n`;
 		kz += `【时长查询】:今日阅读${(
             config.data.pageParams.todayReadSeconds / 60
         ).toFixed(0)}分钟\n`;
-		
-		
+}
+				
       resolve();
     });
   });
@@ -493,8 +551,8 @@ function qqreadconfig() {
 // 阅读时长
 function qqreadtime() {
   return new Promise((resolve, reject) => {
-	  do TIME = Math.floor(Math.random()*30);
-        while( TIME < 20 )	  
+	  do TIME = Math.floor(Math.random()*35);
+        while( TIME < 25 )	  
     const toqqreadtimeurl = {
       url: qqreadtimeurlVal.replace(/readTime=/g, `readTime=${TIME}`),
       headers: JSON.parse(qqreadtimeheaderVal),
@@ -502,9 +560,10 @@ function qqreadtime() {
     $.get(toqqreadtimeurl, (error, response, data) => {
       if (logs) $.log(`${O}, 阅读时长: ${data}`);
       let time = JSON.parse(data);
-      if (time.code == 0) 
+      if (time.code == 0){
 	  tz += `【阅读时长】:上传${(TIME/6).toFixed(1)}分钟\n`;
 	  kz += `【阅读时长】:上传${(TIME/6).toFixed(1)}分钟\n`;
+}
       resolve();
     });
   });
@@ -520,9 +579,10 @@ function qqreadbox() {
     $.get(toqqreadboxurl, (error, response, data) => {
       if (logs) $.log(`${O}, 宝箱奖励: ${data}`);
       let box = JSON.parse(data);
-      if (box.code==0)
+      if (box.code==0){
         tz += `【宝箱奖励${box.data.count}】:获得${box.data.amount}金币\n`;
 		kz += `【宝箱奖励${box.data.count}】:获得${box.data.amount}金币\n`;
+}
       
       resolve();
     });
@@ -558,9 +618,10 @@ function qqreadwktime() {
     $.get(toqqreadwktimeurl, (error, response, data) => {
       if (logs) $.log(`${O}, 本周阅读时长: ${data}`);
       wktime = JSON.parse(data);
-      if (wktime.code == 0)
+      if (wktime.code == 0){
         tz += `【本周阅读时长】:${wktime.data.readTime}分钟\n`;
 		kz += `【本周阅读时长】:${wktime.data.readTime}分钟\n`;
+}
       resolve();
     });
   });
@@ -575,8 +636,12 @@ function qqreadpick() {
     
       $.get(toqqreadpickurl, (error, response, data) => {
         if (logs) $.log(`${O},周阅读时长奖励任务: ${data}`);
-        let pick = JSON.parse(data);
-        if (pick.data[7].isPick == true) tz += "【周时长奖励】:已全部领取\n";
+        let pick = JSON.parse(data);{
+        if (pick.data[7].isPick == true) 
+        tz += "【周时长奖励】:已全部领取\n";
+        kz += "【周时长奖励】:已全部领取\n";
+      }
+        
         for (let i = 0; i < pick.data.length; i++) {
           setTimeout(() => {
             const pickid = pick.data[i].readTime;
@@ -598,9 +663,10 @@ function qqreadpick() {
             $.get(toqqreadPackageurl, (error, response, data) => {
               if (logs) $.log(`${O}, 领周阅读时长奖励: ${data}`);
               Package = JSON.parse(data);
-              if (Package.code == 0)
+              if (Package.code == 0){
                 tz += `【周时长奖励${i + 1}】:领取${Packageid[i]}阅豆\n`;
-				kz += `【周时长奖励${i + 1}】:领取${Packageid[i]}阅豆\n`;
+                kz += `【周时长奖励${i + 1}】:领取${Packageid[i]}阅豆\n`;
+              }
             });
           }, i * 100);
         }
@@ -621,9 +687,10 @@ function qqreadwithdraw() {
     $.post(toqqreadwithdrawurl, (error, response, data) => {
       if (logs) $.log(`${O}, 提现: ${data}`);
       let withdraw = JSON.parse(data);
-      if (withdraw.data.code == 0)
+      if (withdraw.data.code == 0){
         tz += `【现金提现】:成功提现${CASH}元\n`;
 		kz += `【现金提现】:成功提现${CASH}元\n`;
+      }
       resolve();
     });
   });
@@ -644,7 +711,7 @@ for(var y=1;y<9;y++){
     for(var i=0;i<20;i++){
 if(trans.data.list[i].createTime>=daytime)
   day+=trans.data.list[i].amount;
-}
+    }
 tz+="【今日收益】:获得"+day+'\n'
 kz+="【今日收益】:获得"+day+'\n'
 resolve();
